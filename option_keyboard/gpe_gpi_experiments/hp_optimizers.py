@@ -11,7 +11,7 @@ class HyperParamTuning:
         self.range_max = range_max
 
     def next_value(self):
-        raise NotImplementedError
+        raise NotImplementedError("Implement this function when you extend the class")
     
 
 class RandomSearch(HyperParamTuning):
@@ -22,9 +22,9 @@ class RandomSearch(HyperParamTuning):
 
 class EvolutionTuning(HyperParamTuning):
     def next_value(self):
-        pass
+        raise NotImplementedError
 
         
 class BayesianOptimization(HyperParamTuning):
     def next_value(self):
-        pass
+        raise NotImplementedError
