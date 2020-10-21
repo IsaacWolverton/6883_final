@@ -11,7 +11,7 @@ class HyperParamTuning:
         self.range_max = range_max
 
     def next_value(self):
-        pass
+        raise NotImplementedError
     
 
 class RandomSearch(HyperParamTuning):
