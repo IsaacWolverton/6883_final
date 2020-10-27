@@ -11,7 +11,7 @@ class HyperParamTuning:
         self.range_min = range_min
         # TODO: note whether max is inclusive
         self.range_max = range_max
-
+        self.current = 0
     def next_value(self):
         raise NotImplementedError("Implement this function when you extend the class")
     
@@ -19,7 +19,8 @@ class HyperParamTuning:
 class RandomSearch(HyperParamTuning):
 
     def next_value(self):
-        return random.uniform(self.range_min, self.range_max)
+        self.current = random.uniform(self.range_min, self.range_max)
+        return self.current
 
 class GridSearch(HyperParamTuning):
     def __init__(self, range_min, range_max, number_of_splits):

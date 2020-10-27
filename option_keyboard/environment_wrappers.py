@@ -29,6 +29,7 @@ import tree
 
 from option_keyboard import smart_module
 
+from hp_optimizers import HyperParamTuning
 
 class EnvironmentWithLogging(dm_env.Environment):
   """Wraps an environment with additional logging."""
@@ -173,7 +174,6 @@ class EnvironmentWithKeyboardDirect(dm_env.Environment):
   This is different from EnvironmentWithKeyboard as the actions space is not
   discretized.
 
-  TODO(shaobohou) Merge the two implementations.
   """
 
   def __init__(self,
