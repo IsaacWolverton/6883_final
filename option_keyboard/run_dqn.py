@@ -55,7 +55,7 @@ def main(argv):
       batch_size=10,
       optimizer_name="AdamOptimizer",
       optimizer_kwargs=dict(learning_rate=3e-4,))
-
+    # TODO do we want the ema_returns?
   _, ema_returns = experiment.run(
       env,
       agent,
