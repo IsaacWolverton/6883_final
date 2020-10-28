@@ -3,8 +3,8 @@
 
 # ============================================================================
 
-from absl import app
-from absl import flags
+# from absl import app
+# from absl import flags
 
 import numpy as np
 import tensorflow.compat.v1 as tf
@@ -18,12 +18,16 @@ from option_keyboard import scavenger
 from option_keyboard import smart_module
 from option_keyboard.gpe_gpi_experiments import regressed_agent
 
-FLAGS = flags.FLAGS
-flags.DEFINE_integer("num_episodes", 10000, "Number of training episodes.")
-flags.DEFINE_integer("report_every", 200,
-                     "Frequency at which metrics are reported.")
-flags.DEFINE_string("output_path", None, "Path to write out training curves.")
-flags.DEFINE_string("keyboard_path", None, "Path to keyboard model.")
+# FLAGS = flags.FLAGS
+# flags.DEFINE_integer("num_episodes", 10000, "Number of training episodes.")
+# flags.DEFINE_integer("report_every", 200,
+#                      "Frequency at which metrics are reported.")
+# flags.DEFINE_string("output_path", None, "Path to write out training curves.")
+# flags.DEFINE_string("keyboard_path", None, "Path to keyboard model.")
+num_episodes = 2000
+report_every = 200
+output_path = None
+keyboard_path = None
 
 # ===========================================================================
 
@@ -70,11 +74,11 @@ def evaluate_regressed(discount_list):
   _, ema_returns = experiment.run(
       env,
       agent,
-      num_episodes=FLAGS.num_episodes,
-      report_every=FLAGS.report_every,
+      num_episodes=num_episodes,
+      report_every=report_every,
       num_eval_reps=20)
-  if FLAGS.output_path:
-    experiment.write_returns_to_file(FLAGS.output_path, ema_returns)
+  if output_path:
+    experiment.write_returns_to_file(output_path, ema_returns)
 
 
 def evaluate_dqn(discount_list):
@@ -109,24 +113,23 @@ def evaluate_dqn(discount_list):
   _, ema_returns = experiment.run(
       env,
       agent,
-      num_episodes=FLAGS.num_episodes,
-      report_every=FLAGS.report_every)
-  if FLAGS.output_path:
-    experiment.write_returns_to_file(FLAGS.output_path, ema_returns)
+      num_episodes=num_episodes,
+      report_every=report_every)
+  if output_path:
+    experiment.write_returns_to_file(output_path, ema_returns)
   
-  final_eval_reward = ema_returns[-1]
-  
+  # pull out the evaluation reward from the final episode
+  final_eval_reward = ema_returns[-1].get("eval")[0]
+
   # return the negative of that value to the minimization function(s)
   return final_eval_reward * -1
 
 
+def main():
 
-def main(argv):
-  del argv
-  
   dis_list = [.9]
   obj_val = evaluate_dqn(dis_list)
 
 if __name__ == "__main__":
   tf.disable_v2_behavior()
-  app.run(main)
+  main()
