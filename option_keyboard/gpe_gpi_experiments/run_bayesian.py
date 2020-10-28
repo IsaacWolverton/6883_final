@@ -6,4 +6,4 @@ if __name__ == "__main__":
     range_min = .7
     range_max = 1
 
-    hyperParamTuner.tuneWithBayesianOptimization(range_min, range_max, 30, True)
+    hyperParamTuner.tuneWithBayesianOptimization(range_min, range_max, 90, False)

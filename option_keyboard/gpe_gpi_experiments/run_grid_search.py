@@ -6,4 +6,4 @@ if __name__ == "__main__":
     range_min = .7
     range_max = 1
 
-    hyperParamTuner.tuneWithGridSearch(range_min, range_max, 30)
+    hyperParamTuner.tuneWithGridSearch(range_min, range_max, 100)

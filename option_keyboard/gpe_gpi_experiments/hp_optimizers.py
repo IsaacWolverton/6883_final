@@ -42,14 +42,14 @@ class HyperParamTuner:
     evaluate to the lowest objective value. Writes best params to file.
     range_min (float): lower, inclusive bound of the range to random search
     range_max (float): upper, inclusive bound of the range to random search
-    number_of_splits (integer): number of times to evaluate on the parameters, in 
-                                (range_max-range_min)/number_of_splits increments
+    iterations (integer): number of times to evaluate on the parameters, in 
+                                (range_max-range_min)/(number_of_splits-1) increments
     '''
-    def tuneWithGridSearch(self, range_min, range_max, number_of_splits):
-        step = (range_max - range_min)/number_of_splits
+    def tuneWithGridSearch(self, range_min, range_max, iterations):
+        step = (range_max - range_min)/(iterations-1)
         best_objective_val = None
         best_params = None
-        for i in range(number_of_splits+1):
+        for i in range(iterations):
             params = [range_min + i * step]
             current_objective_val = self.evaluate_model(params)
             if best_objective_val == None or current_objective_val < best_objective_val:
