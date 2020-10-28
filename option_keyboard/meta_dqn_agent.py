@@ -78,13 +78,14 @@ class MetaAgent():
     qa_tm1 = _batched_index(q_tm1, a_tm1)
     qa_t = _batched_index(q_t, a_t)
 
-    # TD error
     g = self._additional_discount * d_t
+
+    # TD error
     td_error = tf.stop_gradient(r_t + g * qa_t) - qa_tm1
-    # meta_td_error = tf.stop_gradient(r_t) + g * tf.stop_gradient(qa_t) - tf.stop_gradient(qa_tm1)
-    meta_td_error = tf.stop_gradient(r_t) + g * tf.stop_gradient(qa_t) - qa_tm1
-    # meta_td_error = r_t + g * qa_t - qa_tm1
     loss = tf.reduce_sum(tf.square(td_error) / 2)
+
+    # meta TD error
+    meta_td_error = tf.stop_gradient(r_t) + g * tf.stop_gradient(qa_t) - tf.stop_gradient(qa_tm1)
     meta_loss = tf.reduce_sum(tf.square(meta_td_error) / 2)
 
     with tf.variable_scope("optimizer"):
