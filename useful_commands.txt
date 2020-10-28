@@ -1,0 +1,11 @@
+// run train_keyboard
+python -m option_keyboard.gpe_gpi_experiments.train_keyboard --export_path=$(pwd)/option_keyboard/output/train_keyboard
+
+// run_dqn
+python -m option_keyboard.run_dqn --output_path=$(pwd)/option_keyboard/output/dqn.csv
+
+// run regressed_agent
+python -m option_keyboard.gpe_gpi_experiments.run_regressed_w_fig4b --keyboard_path=$(pwd)/option_keyboard/output/train_keyboard/tfhub --output_path=$(pwd)/option_keyboard/output/fig4b_regressed_w.csv
+
+// train 10 dqn in parallel
+seq 0 9 | parallel --linebuffer --tag python -m option_keyboard.run_dqn --output_path=$(pwd)/option_keyboard/output/dqn{}.csv --num_episodes=10000

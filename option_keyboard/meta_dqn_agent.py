@@ -21,7 +21,7 @@ import sonnet as snt
 import tensorflow.compat.v1 as tf
 
 
-class Agent():
+class MetaAgent():
   """A DQN Agent."""
 
   def __init__(
@@ -81,16 +81,24 @@ class Agent():
     # TD error
     g = self._additional_discount * d_t
     td_error = tf.stop_gradient(r_t + g * qa_t) - qa_tm1
+    # meta_td_error = tf.stop_gradient(r_t) + g * tf.stop_gradient(qa_t) - tf.stop_gradient(qa_tm1)
+    meta_td_error = tf.stop_gradient(r_t) + g * tf.stop_gradient(qa_t) - qa_tm1
+    # meta_td_error = r_t + g * qa_t - qa_tm1
     loss = tf.reduce_sum(tf.square(td_error) / 2)
+    meta_loss = tf.reduce_sum(tf.square(meta_td_error) / 2)
 
     with tf.variable_scope("optimizer"):
       self._optimizer = getattr(tf.train, optimizer_name)(**optimizer_kwargs)
       train_op = self._optimizer.minimize(loss)
+      self._meta_optimizer = getattr(tf.train, optimizer_name)(**optimizer_kwargs)
+      meta_train_op = self._meta_optimizer.minimize(meta_loss)
 
     # Make session and callables.
     session = tf.Session()
     self.sess = session
     self._update_fn = session.make_callable(train_op,
+                                            [o_tm1, a_tm1, r_t, d_t, o_t])
+    self._meta_update_fn = session.make_callable(meta_train_op,
                                             [o_tm1, a_tm1, r_t, d_t, o_t])
     self._value_fn = session.make_callable(q, [o])
     session.run(tf.global_variables_initializer())
@@ -121,8 +129,13 @@ class Agent():
     self._replay.append(transition)
 
     if len(self._replay) == self._batch_size:
-      batch = list(zip(*self._replay))
-      self._update_fn(*batch)
+      batch1 = list(zip(*self._replay[:len(self._replay)//2]))
+      batch2 = list(zip(*self._replay[len(self._replay)//2:]))
+      self._update_fn(*batch1)
+      self._meta_update_fn(*batch2)
+      self._update_fn(*batch2)
+      self._meta_update_fn(*batch1)
+
       self._replay = []  # Just a queue.
 
 class ValueNet(snt.AbstractModule):

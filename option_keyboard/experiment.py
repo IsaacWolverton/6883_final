@@ -43,6 +43,7 @@ def run(env, agent, num_episodes, report_every=200, num_eval_reps=1):
 
   returns = []
   logged_returns = []
+  discounts = []
   train_return_ema = 0.
   eval_return_ema = 0.
   for episode in range(num_episodes):
@@ -61,6 +62,9 @@ def run(env, agent, num_episodes, report_every=200, num_eval_reps=1):
       returns[-1]["eval"].append(eval_episode_return)
 
     if ((episode + 1) % report_every) == 0 or episode == 0:
+      cur_discount = agent._additional_discount.eval(session=agent.sess)
+      discounts.append(cur_discount)
+      print(cur_discount)
       logged_returns.append(
           dict(episode=episode, train=train_return_ema, eval=[eval_return_ema]))
       logging.info("Episode %s, avg train return %.3f, avg eval return %.3f",
@@ -68,6 +72,10 @@ def run(env, agent, num_episodes, report_every=200, num_eval_reps=1):
       if hasattr(agent, "get_logs"):
         logging.info("Episode %s, agent logs: %s", episode + 1,
                      agent.get_logs())
+
+  print("discount")
+  for disc in discounts:
+      print(disc)
 
   return returns, logged_returns
 
