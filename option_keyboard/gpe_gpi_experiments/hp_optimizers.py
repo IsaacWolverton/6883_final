@@ -9,14 +9,14 @@ tuning using the corresponding type and return the optimal hyperparameters in a 
 each method will thus run evaluate_model multiple times in order to evaluate several different
 hyperparameter possibilities. 
 '''
-class HyperParamTuning:
+class HyperParamTuner:
     
     def __init__(self, evaluate_model):
         self.evaluate_model = evaluate_model    
 
     '''
     This performs random search using the evaluate model and returns a list of the params that 
-    evaluate to the highest objective value.
+    evaluate to the lowest objective value.
     range_min (float): lower, inclusive bound of the range to random search
     range_max (float): upper, inclusive bound of the range to random search
     iterations (integer): number of times to evaluate on the random parameters 
@@ -26,15 +26,15 @@ class HyperParamTuning:
         best_params = None
         for i in range(iterations):
             params = [random.uniform(range_min, range_max)]
-            current_objective_val = self.evaluate_model([params])
-            if not best_objective_val or current_objective_val > best_objective_val:
+            current_objective_val = self.evaluate_model(params)
+            if best_objective_val == None or current_objective_val < best_objective_val:
                 best_params = params
                 best_objective_val = current_objective_val  
         return best_params
 
     '''
     This performs grid search using the evaluate model and returns a list of the params that 
-    evaluate to the highest objective value.
+    evaluate to the lowest objective value.
     range_min (float): lower, inclusive bound of the range to random search
     range_max (float): upper, inclusive bound of the range to random search
     number_of_splits (integer): number of times to evaluate on the parameters, in 
@@ -46,17 +46,17 @@ class HyperParamTuning:
         best_params = None
         for i in range(number_of_splits+1):
             params = [range_min + i * step]
-            current_objective_val = self.evaluate_model([params])
-            if not best_objective_val or current_objective_val > best_objective_val:
+            current_objective_val = self.evaluate_model(params)
+            if best_objective_val == None or current_objective_val < best_objective_val:
                 best_params = params
                 best_objective_val = current_objective_val  
         return best_params
 
     '''
     This performs bayesian optimization using the evaluate model and returns a list of the params that 
-    evaluate to the highest objective value.
+    evaluate to the lowest objective value.
     range_min (float): lower, exclusive bound of the range to random search
     range_max (float): upper, exclusive bound of the range to random search
     '''
     def tuneWithBayesianOptimization(self, range_min, range_max):
-        return gp_minimize(self.evaluate_model, [float(range_min), float(range_max)])
+        return gp_minimize(self.evaluate_model, [(float(range_min), float(range_max))], n_calls = 30)
