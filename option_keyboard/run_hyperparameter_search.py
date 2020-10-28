@@ -6,24 +6,35 @@
 from absl import app
 from absl import flags
 
+import numpy as np
 import tensorflow.compat.v1 as tf
+import tensorflow_hub as hub
 
 from option_keyboard import configs
 from option_keyboard import dqn_agent
 from option_keyboard import environment_wrappers
 from option_keyboard import experiment
 from option_keyboard import scavenger
+from option_keyboard import smart_module
+from option_keyboard.gpe_gpi_experiments import regressed_agent
 
 FLAGS = flags.FLAGS
 flags.DEFINE_integer("num_episodes", 10000, "Number of training episodes.")
 flags.DEFINE_integer("report_every", 200,
                      "Frequency at which metrics are reported.")
 flags.DEFINE_string("output_path", None, "Path to write out training curves.")
+flags.DEFINE_string("keyboard_path", None, "Path to keyboard model.")
 
 # ===========================================================================
 
 # in one lifetime, create an environment, pass in next_value as its additional_discount, run the experiment
-def run_hyperparam_regressed(discount_list):
+
+# TODO if we want to pass in a custom discount to the keyboard, we need to:
+    # make a new version of keyboard_utils where additional_discount is not .9, but passed in
+    # make a new version of train_keyboard where the create_and_train_keyboard function takes in a speicifc discount 
+    # figure out the parallelization stuff re: naming the keyboard file
+
+def evaluate_regressed(discount_list):
   """
   Function that takes in a discount value and returns the objective value for regressed
   
@@ -40,7 +51,7 @@ def run_hyperparam_regressed(discount_list):
   base_env = environment_wrappers.EnvironmentWithLogging(base_env)
 
   # Wrap the task environment with the keyboard.
-  additional_discount = 0.9
+  additional_discount = discount_list[0]
   env = environment_wrappers.EnvironmentWithKeyboardDirect(
       env=base_env,
       keyboard=keyboard,
@@ -66,7 +77,7 @@ def run_hyperparam_regressed(discount_list):
     experiment.write_returns_to_file(FLAGS.output_path, ema_returns)
 
 
-def run_hyperparam_dqn(discount_list):
+def evaluate_dqn(discount_list):
   """
   Function that takes in a discount value and returns the objective value for DQN
 
@@ -103,5 +114,19 @@ def run_hyperparam_dqn(discount_list):
   if FLAGS.output_path:
     experiment.write_returns_to_file(FLAGS.output_path, ema_returns)
   
-  return ema_returns[-1]
+  final_eval_reward = ema_returns[-1]
+  
+  # return the negative of that value to the minimization function(s)
+  return final_eval_reward * -1
 
+
+
+def main(argv):
+  del argv
+  
+  dis_list = [.9]
+  obj_val = evaluate_dqn(dis_list)
+
+if __name__ == "__main__":
+  tf.disable_v2_behavior()
+  app.run(main)
