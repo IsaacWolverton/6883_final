@@ -29,8 +29,6 @@ import tree
 
 from option_keyboard import smart_module
 
-from hp_optimizers import HyperParamTuning
-
 class EnvironmentWithLogging(dm_env.Environment):
   """Wraps an environment with additional logging."""
 
