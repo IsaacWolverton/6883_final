@@ -24,7 +24,7 @@ from option_keyboard.gpe_gpi_experiments import regressed_agent
 #                      "Frequency at which metrics are reported.")
 # flags.DEFINE_string("output_path", None, "Path to write out training curves.")
 # flags.DEFINE_string("keyboard_path", None, "Path to keyboard model.")
-num_episodes = 2000
+num_episodes = 10000
 report_every = 200
 output_path = None
 keyboard_path = None
