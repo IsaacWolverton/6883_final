@@ -31,8 +31,8 @@ FLAGS = flags.FLAGS
 flags.DEFINE_integer("num_episodes", 10000, "Number of training episodes.")
 flags.DEFINE_integer("report_every", 200,
                      "Frequency at which metrics are reported.")
+flags.DEFINE_float("discount", 0.9, "The discount factor.")
 flags.DEFINE_string("output_path", None, "Path to write out training curves.")
-
 
 def main(argv):
   del argv
@@ -51,7 +51,7 @@ def main(argv):
           activate_final=True,
       ),
       epsilon=0.1,
-      additional_discount=0.9,
+      additional_discount=FLAGS.discount,
       batch_size=10,
       optimizer_name="AdamOptimizer",
       optimizer_kwargs=dict(learning_rate=3e-4,))
