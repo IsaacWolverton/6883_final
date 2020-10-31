@@ -1,5 +1,5 @@
 # 6883_final
-6.883 Fast RL with self-tuning hyperparameters
+6.883 Fast RL with self-tuning hyperparameters, this project builds off of the work done by the DeepMind team [here](https://github.com/deepmind/deepmind-research/tree/master/option_keyboard).
 
 ### Setup
 Use below command to setup virtualenv, only specify --python if you need to:
@@ -20,6 +20,11 @@ pip install -r option_keyboard/requirements.txt
 ### Train the DQN baseline
 ```
 python -m option_keyboard.run_dqn
+```
+
+### Train the self-tuning DQN
+```
+python -m option_keyboard.run_meta_dqn
 ```
 
 ### Train the Option Keyboard and agent
