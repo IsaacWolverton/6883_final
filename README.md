@@ -1,6 +1,14 @@
 # 6883_final
 6.883 Fast RL with self-tuning hyperparameters, this project builds off of the work done by the DeepMind team [here](https://github.com/deepmind/deepmind-research/tree/master/option_keyboard).
 
+Below is a table comparing the three hyperparameter tuning algorithms. Each algorithm was run for 100 agent lifetimes.
+
+Method | Discount | Cumulative Reward
+------------ | ------------- | -------------
+Grid Search | 0.852 | 6.8885
+Random Search | 0.912 | 6.9245
+Bayesian Search | 0.885 | 7.0609
+
 ### Setup
 Use below command to setup virtualenv, only specify --python if you need to:
 ```
