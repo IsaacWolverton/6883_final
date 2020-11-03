@@ -41,14 +41,14 @@ python -m option_keyboard.run_ok
 ```
 
 ### Our Files (for 6.883, not from Deepmind)
-meta_dqn_agent.py
+- meta_dqn_agent.py
+- run_meta_dqn.py
+#### In the parameter-tuning branch:
 
-# In the parameter-tuning branch:
-
-run_hyperparameter_search.py
-hp_optimizers.py
-run_bayesian.py
-run_grid_search.py
-run_random_search.py
-test.py
+- run_hyperparameter_search.py
+- hp_optimizers.py
+- run_bayesian.py
+- run_grid_search.py
+- run_random_search.py
+- test.py
 
