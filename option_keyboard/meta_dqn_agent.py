@@ -85,7 +85,7 @@ class MetaAgent():
     loss = tf.reduce_sum(tf.square(td_error) / 2)
 
     # meta TD error
-    meta_td_error = tf.stop_gradient(r_t) + g * tf.stop_gradient(qa_t) - tf.stop_gradient(qa_tm1)
+    meta_td_error = tf.stop_gradient(r_t) + self._additional_discount * d_t * tf.stop_gradient(qa_t) - tf.stop_gradient(qa_tm1)
     meta_loss = tf.reduce_sum(tf.square(meta_td_error) / 2)
 
     with tf.variable_scope("optimizer"):
@@ -130,10 +130,15 @@ class MetaAgent():
     self._replay.append(transition)
 
     if len(self._replay) == self._batch_size:
-      batch1 = list(zip(*self._replay[:len(self._replay)//2]))
-      batch2 = list(zip(*self._replay[len(self._replay)//2:]))
+      split = len(self._replay)//2
+      batch1 = list(zip(*self._replay[:split]))
+      batch2 = list(zip(*self._replay[split:]))
       self._update_fn(*batch1)
       self._meta_update_fn(*batch2)
+
+      # force discount to be one when calculating gradients
+      self._additional_discount.assign(1.0)
+
       self._update_fn(*batch2)
       self._meta_update_fn(*batch1)
 
