@@ -49,7 +49,9 @@ class Agent():
     """
 
     self._epsilon = epsilon
-    self._additional_discount = tf.Variable(additional_discount, name="Discount")
+    self._additional_discount = additional_discount
+    #TODO remove
+    # self._additional_discount = tf.Variable(additional_discount, name="Discount")
     self._batch_size = batch_size
 
     self._n_actions = action_spec.num_values

@@ -9,3 +9,11 @@ python -m option_keyboard.gpe_gpi_experiments.run_regressed_w_fig4b --keyboard_p
 
 // train 10 dqn in parallel
 seq 0 9 | parallel --linebuffer --tag python -m option_keyboard.run_dqn --output_path=$(pwd)/option_keyboard/output/dqn{}.csv --num_episodes=10000
+
+// new commands
+python -m option_keyboard.gpe_gpi_experiments.train_keyboard --num_pretrain_episodes=10000 --policy_weights_name=12 --export_path=$(pwd)/option_keyboard/output/keyboards/fig4_keyboard
+python -m option_keyboard.gpe_gpi_experiments.run_regressed_w_fig4b --num_episodes=4000 --report_every=5 --keyboard_path=$(pwd)/option_keyboard/output/keyboards/fig4_keyboard_12/tfhub --output_path=$(pwd)/option_keyboard/output/fig4b_regressed_w.csv
+
+// new parallel commands
+cat discounts.txt | parallel --linebuffer --tag python -m option_keyboard.gpe_gpi_experiments.train_keyboard --num_pretrain_episodes=10000 --policy_weights_name=12 --export_path=$(pwd)/option_keyboard/output/keyboards/fig4_keyboard_{}
+cat discounts.txt | parallel --linebuffer --tag python -m option_keyboard.gpe_gpi_experiments.run_regressed_w_fig4b --num_episodes=4000 --report_every=5 --keyboard_path=$(pwd)/option_keyboard/output/keyboards/fig4_keyboard_{}_12/tfhub --output_path=$(pwd)/option_keyboard/output/fig4b_regressed_w_{}.csv
