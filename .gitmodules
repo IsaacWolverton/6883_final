@@ -1,0 +1,3 @@
+[submodule "La-MAML"]
+	path = La-MAML
+	url = https://github.com/montrealrobotics/La-MAML.git
